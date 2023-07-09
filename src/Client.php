@@ -43,7 +43,7 @@ class Client
      * - `cache_age` : cache age (in seconds) if the object is public
      * - `ttl` : object URL expiration time (in seconds) if the object is protected
      *
-     * @param string $collection Name of the object collection
+     * @param string $collection Name of the object collection (only lowercase alphanumeric characters, underscores, and dashes are allowed)
      * @param string $filePath Path the of file to upload
      * @param array $attributes Object attributes
      *
@@ -54,14 +54,18 @@ class Client
         if ($collection === '') {
             throw new Exception('collection name cannot be empty');
         }
+        if (preg_match('/^[a-z0-9_-]+$/', $collection) !== 1) {
+            throw new Exception('invalid collection name format');
+        }
 
         $attributes = count($attributes) == 0 ? new stdClass() : $attributes;
 
         $params = [];
-        $params['t'] = time();
-        $params['f'] = new CURLFile($filePath);
-        $params['attr'] = json_encode($attributes);
-        $params['sig'] = hash_hmac('sha256', $timestamp.md5_file($filePath).md5($params['attr']), $this->secretKey);
+        $params['time'] = time();
+        $params['collection'] = $collection;
+        $params['file'] = new CURLFile($filePath);
+        $params['attributes'] = json_encode($attributes);
+        $params['signature'] = hash_hmac('sha256', $params['time'].$params['collection'].md5_file($filePath).md5($params['attributes']), $this->secretKey);
 
         $request = curl_init($this->serverUrl.'store.php');
         curl_setopt($request, CURLOPT_POST, true);
@@ -86,9 +90,9 @@ class Client
     public function delete($objectId)
     {
         $params = [];
-        $params['t'] = time();
+        $params['time'] = time();
         $params['id'] = $objectId;
-        $params['sig'] = hash_hmac('sha256', $params['t'].$params['id'], $this->secretKey);
+        $params['signature'] = hash_hmac('sha256', $params['time'].$params['id'], $this->secretKey);
 
         $request = curl_init($this->serverUrl.'delete.php');
         curl_setopt($request, CURLOPT_POST, true);
@@ -113,9 +117,9 @@ class Client
     public function getUrl($objectId)
     {
         $params = [];
-        $params['t'] = time();
+        $params['time'] = time();
         $params['id'] = $objectId;
-        $params['sig'] = hash_hmac('sha256', $params['t'].$params['id'], $this->secretKey);
+        $params['signature'] = hash_hmac('sha256', $params['time'].$params['id'], $this->secretKey);
 
         $request = curl_init($this->serverUrl.'url.php?'.http_build_query($params));
         curl_setopt($request, CURLOPT_HEADER, false);
