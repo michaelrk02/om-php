@@ -1,0 +1,18 @@
+{
+    "name": "michaelrk02/om-php",
+    "description": "Simple object manager for PHP",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Michaelrk02\\OmPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Michael R. Krisnadhi",
+            "email": "michaelkrisnadhi@gmail.com"
+        }
+    ],
+    "require": {}
+}
