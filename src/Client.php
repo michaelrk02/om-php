@@ -70,7 +70,6 @@ class Client
         $request = curl_init($this->serverUrl.'store.php');
         curl_setopt($request, CURLOPT_POST, true);
         curl_setopt($request, CURLOPT_POSTFIELDS, $params);
-        curl_setopt($request, CURLOPT_HEADER, false);
         curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
 
         $response = @json_decode(curl_exec($request), true);
@@ -97,7 +96,6 @@ class Client
         $request = curl_init($this->serverUrl.'delete.php');
         curl_setopt($request, CURLOPT_POST, true);
         curl_setopt($request, CURLOPT_POSTFIELDS, http_build_query($params));
-        curl_setopt($request, CURLOPT_HEADER, false);
         curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
         curl_exec($request);
 
@@ -174,7 +172,6 @@ class Client
         }
 
         $request = curl_init($objectUrl);
-        curl_setopt($request, CURLOPT_HEADER, false);
         curl_setopt($request, CURLOPT_FILE, $fp);
         curl_exec($request);
 
