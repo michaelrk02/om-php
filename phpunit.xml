@@ -1,0 +1,11 @@
+<phpunit>
+    <testsuites>
+        <testsuite name="omphp">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <const name="OM_SERVER_URL" value="http://omphp-server.localhost/" />
+        <const name="OM_SECRET_KEY" value="secret" />
+    </php>
+</phpunit>
